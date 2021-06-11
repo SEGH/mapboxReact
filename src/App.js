@@ -9,6 +9,9 @@ function App() {
   const [lng, setLng] = useState(-75);
   const [lat, setLat] = useState(39.9);
   const [zoom, setZoom] = useState(9);
+  const marker = useRef(null);
+  const [markerLng, setMarkerLng] = useState(-75.1684);
+  const [markerLat, setMarkerLat] = useState(39.9322);
 
   useEffect(() => {
     if (map.current) return;
@@ -18,6 +21,12 @@ function App() {
       center: [lng, lat],
       zoom: zoom
     });
+    if (marker.current) return;
+    marker.current = new mapboxgl.Marker({
+      color: "#FFFFFF",
+      draggable: true
+    }).setLngLat([markerLng, markerLat]);
+    marker.current.addTo(map.current);
   });
 
   useEffect(() => {
@@ -27,13 +36,19 @@ function App() {
       setLat(map.current.getCenter().lat.toFixed(4));
       setZoom(map.current.getZoom().toFixed(2));
     });
+    if (!marker.current) return;
+    marker.current.on('drag', () => {
+      setMarkerLng(marker.current.getLngLat().lng.toFixed(4));
+      setMarkerLat(marker.current.getLngLat().lat.toFixed(4));
+    });
   });
 
   return (
     <div className="App">
       <div ref={mapContainer} className="map-container" />
       <div className="sidebar">
-        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+        <p>Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}</p>
+        <p>Marker Longitude: {markerLng} | Latitude: {markerLat}</p>
       </div>
     </div>
   );
