@@ -12,6 +12,16 @@ code {
     monospace;
 }
 
+.App {
+  padding: 1em;
+}
+
 .map-container {
-  height: 400px;
+  width: 100%;
+  height: calc(100vh - 7em);
+}
+
+.sidebar {
+  display: flex;
+  justify-content: space-between;
 }
