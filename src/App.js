@@ -19,8 +19,9 @@ function App() {
   const geocoder = useRef(null);
 
   useEffect(() => {
+    // If no current map, add a new map
     if (map.current) return;
-    console.log('useEffect One')
+    // console.log('useEffect One')
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v11',
@@ -28,6 +29,7 @@ function App() {
       zoom: zoom
     });
 
+    // Add draggable marker to map
     if (marker.current) return;
     marker.current = new mapboxgl.Marker({
       color: "#FFFFFF",
@@ -35,6 +37,7 @@ function App() {
     }).setLngLat([markerLng, markerLat]);
     marker.current.addTo(map.current);
 
+    // Add GeolocateControl to locate and track the user
     if (geolocate.current) return;
     geolocate.current = new mapboxgl.GeolocateControl({
       positionOptions: {
@@ -51,18 +54,23 @@ function App() {
   });
 
   useEffect(() => {
+    // If map, set the lat and long to current map center and zoom to current zoom
     if (!map.current) return;
-    console.log('useEffect Two')
+    // console.log('useEffect Two')
     map.current.on('move', () => {
       setLng(map.current.getCenter().lng.toFixed(4));
       setLat(map.current.getCenter().lat.toFixed(4));
       setZoom(map.current.getZoom().toFixed(2));
     });
+
+    // Update marker coordinates when marker is dragged
     if (!marker.current) return;
     marker.current.on('drag', () => {
       setMarkerLng(marker.current.getLngLat().lng.toFixed(4));
       setMarkerLat(marker.current.getLngLat().lat.toFixed(4));
     });
+
+    // When receiving a geolocation, set update geoCoords state to coordinates
     if (!geolocate.current) return;
     geolocate.current.on('geolocate', (data) => {
       console.log(data);
