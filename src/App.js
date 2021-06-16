@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -14,6 +16,7 @@ function App() {
   const [markerLat, setMarkerLat] = useState(39.9322);
   const geolocate = useRef(null);
   const [geoCoords, setGeoCoords] = useState(null);
+  const geocoder = useRef(null);
 
   useEffect(() => {
     if (map.current) return;
@@ -40,6 +43,11 @@ function App() {
       trackUserLocation: true
     })
     map.current.addControl(geolocate.current);
+
+    // Adds geocoding control to web map, enabling users to search the map for a place
+    if (geocoder.current) return;
+    geocoder.current = new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: mapboxgl });
+    map.current.addControl(geocoder.current)
   });
 
   useEffect(() => {
@@ -58,7 +66,7 @@ function App() {
     if (!geolocate.current) return;
     geolocate.current.on('geolocate', (data) => {
       console.log(data);
-      setGeoCoords({ lat: data.coords.latitude.toFixed(4), lon: data.coords.longitude.toFixed(4)});
+      setGeoCoords({ lat: data.coords.latitude.toFixed(4), lon: data.coords.longitude.toFixed(4) });
     })
   });
 
