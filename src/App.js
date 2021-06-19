@@ -29,12 +29,15 @@ function App() {
       zoom: zoom
     });
 
+    // Create popup
+    const popup = new mapboxgl.Popup({ offset: 25 }).setText('Hello!');
+
     // Add draggable marker to map
     if (marker.current) return;
     marker.current = new mapboxgl.Marker({
       color: "#FFFFFF",
       draggable: true
-    }).setLngLat([markerLng, markerLat]);
+    }).setLngLat([markerLng, markerLat]).setPopup(popup);
     marker.current.addTo(map.current);
 
     // Add GeolocateControl to locate and track the user
